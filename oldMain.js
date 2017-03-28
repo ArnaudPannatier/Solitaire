@@ -34,7 +34,7 @@ var record = {
 	nextDot : 0,
 	ajoute : function(dotPos){
 		
-
+	
 		if(record.posT == 0 && record.posC == 0){
 			record.dot.push(new Array());
 			record.coup.push(new Array());
@@ -45,7 +45,7 @@ var record = {
 		record.coup[record.posT].push(record.nextCoup);
 		record.dotPossible[record.posT].push(dotPos);
 		
-
+	
 	},
 	ajoute_coupPos : function(c){
 
@@ -69,14 +69,14 @@ var record = {
 		
 
 		while(!acheve){
-
-			if(t[t.length-m]<dP[dP.length-m]-1){
-
-				t[t.length-m] = t[t.length-m]+1;
-				t2[t2.length-m] = 0;
-				acheve = true;
-			}		
-			m++;
+				
+				if(t[t.length-m]<dP[dP.length-m]-1){
+					
+					t[t.length-m] = t[t.length-m]+1;
+					t2[t2.length-m] = 0;
+					acheve = true;
+				}		
+				m++;
 		}
 		m--;
 		for(i=1; i<m; i++){
@@ -94,11 +94,22 @@ var record = {
 
 	},
 	compute : function(){
+		//console.log("coup possibles: "+last(last(record.coupPossible,2),1));
+		/*console.log("coup possibles ");
+		console.log(last(record.coupPossible,2));
+		console.log("coup joués");
+		console.log(last(record.coup,2));
+
+		console.log("dot possible");
+		console.log(last(record.dotPossible,2));
+		console.log("dot joués");
+		console.log(last(record.dot,2))*/
+
 		if(last(last(record.coup,2),1) < last(last(record.coupPossible,2),1)-1){
 			//console.log("un");
 			record.computedC = record.plusplus(last(record.coup,2));
 			record.computedD = last(record.dot,2);
-
+		
 		}else if(last(last(record.dot,2),1) < last(last(record.dotPossible,2),1)){
 			//console.log("zéro");
 			
@@ -106,6 +117,9 @@ var record = {
 
 
 		}
+
+
+
 	},
 	modifie : function(){
 		//console.log(record.computedD.length+" pos "+record.posD);
@@ -318,10 +332,32 @@ var Solitaire = {
 
 		}
 
+
+		/*for(i=0; i<33;i++){
+			if(mapDot[i].stat){
+				switch(mapDot[i].dotAdjTab.length){
+					case 2:
+					mapDot[i].elem.style.backgroundColor = "#f1c40f";
+					break;
+					case 3:
+					mapDot[i].elem.style.backgroundColor = "#2ecc71";
+					break;
+					case 4:
+					mapDot[i].elem.style.backgroundColor = "#3498db";
+					break;
+
+
+
+
+				}
+
+
+			}
+		}*/
 	},
 
 	play : function(container){
-		GA.algo();
+		Solitaire.algo();
 
 
 	},
@@ -334,7 +370,7 @@ var Solitaire = {
 		
 		dotPlay = new Array();
 		Solitaire.colorise();
-
+	
 		couleur1.style.backgroundColor = "#2ecc71";
 		couleur2.style.backgroundColor = "#e74c3c";
 
@@ -357,7 +393,117 @@ var Solitaire = {
 
 		}
 	},
+	/*
+	algo : function(d){
+		k=0;
+		l=0;
+		pi =1;
+		lastDot = {};
+		lastDot2 = {};
+		Solitaire.colorise();
+		memoire.direction.push(new Array());
+		memoire.dot.push(new Array());
+		(function delay(){
 
+			if(Solitaire.is_blocked()){
+				var s = Solitaire.is_winning(); 
+				
+				if(s == 1) return;
+				else{
+					Solitaire.afficheMem();
+					
+					if(s<3){
+						alert(s);
+					}
+					console.log(s);
+
+					Solitaire.remiseAZero();
+					Solitaire.colorise();
+
+
+					memoire.direction.push(new Array());
+					memoire.dot.push(new Array());
+					//Solitaire.actionZero();
+
+					l=0;
+					k++;
+					memoire.tabDir = lastDot; 
+					memoire.tabDot = lastDot2;
+					
+				}
+			}
+
+			setTimeout(function(){
+				
+				var i =0;
+				var j = 0;
+
+				if(k==0){
+					i = 0; 
+					j = 0;
+				}else{
+					if(memoire.direction[k-1][l] == memoire.tabDir.length && memoire.dot[k-1][l]==memoire.tabDot.length-1){
+						pi++;
+						console.log("allons y !");
+					}
+
+
+					if(l==memoire.direction[k-1].length-pi){
+						
+						if(memoire.direction[k-1][l] < memoire.tabDir.length){ 		
+				
+							j = memoire.direction[k-1][l]+1; 
+							i = memoire.dot[k-1][l];
+
+						}else{
+							console.log(memoire.direction[k-1][l]+" - "+memoire.tabDir.length+" : "+memoire.tabDot.length+" - "+(memoire.dot[k-1][l]+1));	
+							
+
+							if((memoire.dot[k-1][l]+1) < memoire.tabDot.length){
+								Solitaire.afficheMem();
+								console.log('2-t');	
+								j = 0;	
+								i = memoire.dot[k-1][l]+1;
+								
+							}
+
+						}
+					}else if(l>memoire.direction[k-1].length-pi){
+						console.log('boucle pas');
+						i = 0; 
+						j = 0;
+
+					}else{
+						i = memoire.dot[k-1][l];
+						j = memoire.direction[k-1][l];
+					}
+				}
+				console.log(dotPlay.length+" "+memoire.tabDot.length);
+				console.log("j : "+j+" i :"+i+" l: "+l+" . "+pi);
+
+				
+
+
+				if(k!= 0 && l<=memoire.direction[k-1].length-pi+1){
+
+					lastDot = dotPlay[i].action[j];
+					lastDot2 = dotPlay;
+				}
+				l++;
+				memoire.direction[k].push(j);
+				memoire.dot[k].push(i);
+
+				Solitaire.joue_coup(dotPlay[i], dotPlay[i].action[j]);
+				
+				delay();
+
+
+			}, 0);
+
+
+		})();
+
+	},*/
 	
 	algo : function(d){
 		k=0, l=0, temp=0;
@@ -370,7 +516,10 @@ var Solitaire = {
 				
 				if(s == 1) return;
 				else{
-
+					if(s<3){
+						alert(s);
+					}
+					console.log("k: "+k+" dot restants : "+s);
 					record.alaligne();
 					Solitaire.remiseAZero();
 					Solitaire.actionZero();
@@ -379,7 +528,7 @@ var Solitaire = {
 					l=0;	
 					temp = (k%100 == 0) ? 100 : 0;
 					if(k%100 == 0)
-						console.log(last(record.dot,2));
+					console.log(last(record.dot,2));
 				}
 			}
 
@@ -442,122 +591,140 @@ var Solitaire = {
 
 
 		})();
+		
+
+
 	},
 	is_blocked : function(){
-		if(dotPlay.length == 0){
-			return true;
-		}
-		else {
-			return false;
-		}
-	},
-	round_o : function(d){
-		if(d.dotAjd.up != undefined){
-			if(d.dotAjd.up.stat == 1)
-				return false;
+			/*blocked = false;
+			
 
-			if(d.dotAjd.up.dotAjd.left != undefined && d.dotAjd.up.dotAjd.left.stat == 1)
-				return false;
-			if(d.dotAjd.up.dotAjd.right != undefined && d.dotAjd.up.dotAjd.right.stat == 1)
-				return false;
-
-		}
-		if(d.dotAjd.left != undefined){
-			if(d.dotAjd.left.stat == 1)
-				return false;
-
-			if(d.dotAjd.left.dotAjd.down != undefined && d.dotAjd.left.dotAjd.down.stat == 1)
-				return false;
-
-		}
-		if(d.dotAjd.right != undefined){
-			if(d.dotAjd.right.stat == 1)
-				return false;
-
-			if(d.dotAjd.right.dotAjd.down != undefined && d.dotAjd.right.dotAjd.down.stat == 1)
-				return false;
-
-		}
-		if(d.dotAjd.down != undefined && d.dotAjd.down.stat ==1){
-			return false;
-		}
-		return true;
-	},
-
-	is_winning : function(){
-		if(Solitaire.is_blocked()){
-			stat = 0;
 			for(i=0; i<33; i++){
-				if(mapDot[i].stat == 1){
-					stat++;
+				if(mapDot[i].stat == 1 && Solitaire.round_o(mapDot[i])){
+					blocked = true;
+					
+				}
 
+			}*/
+
+			if(dotPlay.length == 0)
+				return true;
+			else 
+				return false;
+		},
+		round_o : function(d){
+
+
+			if(d.dotAjd.up != undefined){
+				if(d.dotAjd.up.stat == 1)
+					return false;
+
+				if(d.dotAjd.up.dotAjd.left != undefined && d.dotAjd.up.dotAjd.left.stat == 1)
+					return false;
+				if(d.dotAjd.up.dotAjd.right != undefined && d.dotAjd.up.dotAjd.right.stat == 1)
+					return false;
+
+			}
+			if(d.dotAjd.left != undefined){
+				if(d.dotAjd.left.stat == 1)
+					return false;
+
+				if(d.dotAjd.left.dotAjd.down != undefined && d.dotAjd.left.dotAjd.down.stat == 1)
+					return false;
+
+			}
+			if(d.dotAjd.right != undefined){
+				if(d.dotAjd.right.stat == 1)
+					return false;
+
+				if(d.dotAjd.right.dotAjd.down != undefined && d.dotAjd.right.dotAjd.down.stat == 1)
+					return false;
+
+			}
+			if(d.dotAjd.down != undefined && d.dotAjd.down.stat ==1){
+				return false;
+			}
+			return true;
+		},
+
+		is_winning : function(){
+			if(Solitaire.is_blocked()){
+				stat = 0;
+				for(i=0; i<33; i++){
+					if(mapDot[i].stat == 1){
+						stat++;
+
+					}
+
+				}
+
+				return stat;
+			}
+			return 1000;
+
+		},
+		remiseAZero : function(){
+			for(i=0; i<33; i++){
+				if(i != 10){
+					mapDot[i].stat = 1;
+					
+				}else{
+					mapDot[i].stat = 0;
 				}
 
 			}
 
-			return stat;
-		}
-		return 1000;
 
-	},
-	remiseAZero : function(){
-		for(i=0; i<33; i++){
-			if(i != 10){
-				mapDot[i].stat = 1;
 
-			}else{
-				mapDot[i].stat = 0;
+		},
+		actionZero : function(){
+			for(i=0; i<33; i++){
+				mapDot[i].action = new Array();
+
 			}
-		}
-	},
-	actionZero : function(){
-		for(i=0; i<33; i++){
-			mapDot[i].action = new Array();
+
+		},
+		afficheMem : function(){
+			console.log(memoire.dot[memoire.dot.length-1].toString()+"-  -"+memoire.direction[memoire.direction.length-1].toString());
 
 		}
 
-	},
-	afficheMem : function(){
-		console.log(memoire.dot[memoire.dot.length-1].toString()+"-  -"+memoire.direction[memoire.direction.length-1].toString());
+	};
+
+	var outils = {
+		to_play : function(tab){
+			var play = false;
+			var dir = new Array("up", "left", "right", "down");
+
+			for(j=0; j<dir.length; j++){
+				if(outils.test_exist(tab, dir[j]) && tab.dotAjd[dir[j]].stat ==1 && tab.dotAjd[dir[j]].dotAjd[dir[j]].stat == 0){
+					play = true;
+					tab.action.push(dir[j]);
+					dotPlay.push(tab);
+				}
+			}
+			return play;
+
+		},
+		test_exist : function(t, dir){
+			return (t.dotAjd[dir] != undefined && t.dotAjd[dir].dotAjd[dir] != undefined) ? true : false;
+
+		}
+
+
+	};
+
+
+
+	window.onload = function(){
+		var container = document.getElementById("container");
+		r = document.body.clientHeight*0.9;
+		container.style.height = r+"px";
+		container.style.width = r+"px";
+		container.style.top = r/0.9*0.025+"px";
+
+
+		Solitaire.init(container);
+
 
 	}
-
-};
-
-var outils = {
-	to_play : function(tab){
-		var play = false;
-		var dir = new Array("up", "left", "right", "down");
-
-		for(j=0; j<dir.length; j++){
-			if(outils.test_exist(tab, dir[j]) && tab.dotAjd[dir[j]].stat ==1 && tab.dotAjd[dir[j]].dotAjd[dir[j]].stat == 0){
-				play = true;
-				tab.action.push(dir[j]);
-				dotPlay.push(tab);
-			}
-		}
-		return play;
-
-	},
-	test_exist : function(t, dir){
-		return (t.dotAjd[dir] != undefined && t.dotAjd[dir].dotAjd[dir] != undefined) ? true : false;
-
-	}
-
-
-};
-
-
-
-window.onload = function(){
-	var container = document.getElementById("container");
-	r = document.body.clientHeight*0.9;
-	container.style.height = r+"px";
-	container.style.width = r+"px";
-	container.style.top = r/0.9*0.025+"px";
-
-
-	Solitaire.init(container);
-
-
-}
