@@ -10,7 +10,10 @@ var GA = {
 		console.log(GA.population);
 	},
 	evaluate : function(){
-
+		console.log('evallll');
+		for (var i = 0; i < GA.popSize; i++) {
+			Solitaire.playArray(GA.population[i]);
+		}
 
 
 	},

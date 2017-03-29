@@ -357,8 +357,18 @@ var Solitaire = {
 
 		}
 	},
+	playArray : function(arr){
+		var reste = 0;
 
-	
+		k=0, l=0, temp=0;
+		Solitaire.colorise();
+
+
+		console.log(dotPlay);
+
+
+		return reste;
+	},
 	algo : function(d){
 		k=0, l=0, temp=0;
 		Solitaire.colorise();
@@ -371,7 +381,7 @@ var Solitaire = {
 				if(s == 1) return;
 				else{
 
-					record.alaligne();
+					
 					Solitaire.remiseAZero();
 					Solitaire.actionZero();
 					Solitaire.colorise();				
