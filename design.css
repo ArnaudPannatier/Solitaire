@@ -15,7 +15,6 @@ html, body{
 	margin : 0 auto;
 	text-align: center;
 	color : #000;
-	font-size : 14px;
 	line-height: 45px;
 	
 }
@@ -24,8 +23,14 @@ html, body{
 	position: absolute;
 
 }
-span {
+#Title {
 	position: absolute;
 	right : 20px;
 	bottom : 20px;
+}
+#infos {
+	position: absolute;
+	bottom : 20px;
+	left : 20px;
+	margin: 0 auto;
 }

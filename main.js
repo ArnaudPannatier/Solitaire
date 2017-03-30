@@ -5,160 +5,15 @@ dot.className = 'dot';
 function convert(str){
 	return parseInt(str.substr(0, str.length-2));
 };
+
 var mapDot = new Array();
 var dotPlay = new Array();
 var compt = 0;
-var memoire = {
-	direction : new Array(),
-	dot : new Array(),
-	tabDir : new Array(),
-	tabDot : new Array()
-};
+var completementBloque = false;
 
 function last(tab, i){
 	return tab[tab.length-i];
 };
-
-
-var record = {
-	dot : new Array(),
-	coup : new Array(),
-	dotPossible : new Array(),
-	coupPossible : new Array(),
-	computedC : new Array(),
-	computedD : new Array(),
-	posD : 0,
-	posC : 0,
-	posT : 0,
-	nextCoup : 0,
-	nextDot : 0,
-	ajoute : function(dotPos){
-		
-
-		if(record.posT == 0 && record.posC == 0){
-			record.dot.push(new Array());
-			record.coup.push(new Array());
-			record.dotPossible.push(new Array());
-			record.coupPossible.push(new Array());
-		}
-		record.dot[record.posT].push(record.nextDot);
-		record.coup[record.posT].push(record.nextCoup);
-		record.dotPossible[record.posT].push(dotPos);
-		
-
-	},
-	ajoute_coupPos : function(c){
-
-		record.coupPossible[record.posT].push(c);
-	},
-	plusplus : function(tab){
-		t = tab;
-		t[t.length-1] = t[t.length-1]+1;
-		return t;
-	},
-	plusplusTab : function(){
-		
-
-
-		acheve = false;
-		m=1;
-		
-		t = last(record.dot,2);
-		t2 = last(record.coup,2);
-		dP = last(record.dotPossible,2);
-		
-
-		while(!acheve){
-
-			if(t[t.length-m]<dP[dP.length-m]-1){
-
-				t[t.length-m] = t[t.length-m]+1;
-				t2[t2.length-m] = 0;
-				acheve = true;
-			}		
-			m++;
-		}
-		m--;
-		for(i=1; i<m; i++){
-			t[t.length-i] = 0;
-			t2[t2.length-i] = 0;
-		}
-		record.computedD = t;
-		record.computedC = t2;
-
-	},
-	pluszero : function(tab){
-		t = tab;
-		t[t.length-1] = 0;
-		return t;
-
-	},
-	compute : function(){
-		if(last(last(record.coup,2),1) < last(last(record.coupPossible,2),1)-1){
-			//console.log("un");
-			record.computedC = record.plusplus(last(record.coup,2));
-			record.computedD = last(record.dot,2);
-
-		}else if(last(last(record.dot,2),1) < last(last(record.dotPossible,2),1)){
-			//console.log("zéro");
-			
-			record.plusplusTab();
-
-
-		}
-	},
-	modifie : function(){
-		//console.log(record.computedD.length+" pos "+record.posD);
-		if(record.computedD.length == 0 || record.computedD.length < record.posD+1){
-			record.nextCoup = 0;
-			record.nextDot = 0;
-
-		}else{
-
-			record.nextCoup = record.computedC[record.posC];
-			record.nextDot = record.computedD[record.posD];
-		}
-
-
-	},
-	alaligne : function(){
-		record.posT++;
-		record.posC = 0;
-		record.posD = 0;
-		
-		record.dot.push(new Array());
-		record.coup.push(new Array());
-		record.dotPossible.push(new Array());
-		record.coupPossible.push(new Array());
-
-		record.computedD = new Array();
-		record.computedC = new Array();
-	},
-	avance : function(dotPos){
-		if(record.posT != 0){
-			if(record.computedD.length == 0){
-				record.compute();
-			}
-
-
-		}
-		record.modifie();
-
-		record.ajoute(dotPos);
-		record.posD++;
-		record.posC++;
-
-	},
-	choix_dot: function(dotPos){
-		record.avance(dotPos);
-		return record.nextDot;
-	},
-	choix_coup : function(coupPos){
-		record.ajoute_coupPos(coupPos);
-		return record.nextCoup;
-	},
-};
-
 
 
 var Solitaire = {
@@ -349,7 +204,7 @@ var Solitaire = {
 			}else if(outils.to_play(mapDot[i])){
 				compt++;
 				mapDot[i].elem.style.backgroundColor = "#f1c40f";
-			}else{
+			}else {
 				compt++;
 				mapDot[i].elem.style.backgroundColor = "#3498db";
 
@@ -358,49 +213,42 @@ var Solitaire = {
 		}
 	},
 	playArray : function(arr){
-		var reste = 0;
-
-		k=0, l=0, temp=0;
+		var k = 0;
+		Solitaire.remiseAZero();
+		Solitaire.actionZero();
 		Solitaire.colorise();
 
+		while(!Solitaire.is_blocked()){
+			var i = Math.floor(arr[2*k]*dotPlay.length);
+			var j = Math.floor(arr[2*k+1]*dotPlay[i].action.length);
 
-		console.log(dotPlay);
+			Solitaire.joue_coup(dotPlay[i], dotPlay[i].action[j]);
+			k++;
 
+		}
 
-		return reste;
+		return k;
 	},
-	algo : function(d){
-		k=0, l=0, temp=0;
+	playSlowArray : function(arr){
+		k=0, temp=0;
+		Solitaire.remiseAZero();
+		Solitaire.actionZero();
 		Solitaire.colorise();
 		
 		(function delay(){
-
-			if(Solitaire.is_blocked()){
-				var s = Solitaire.is_winning(); 
-				
-				if(s == 1) return;
-				else{
-
-					
-					Solitaire.remiseAZero();
-					Solitaire.actionZero();
-					Solitaire.colorise();				
-					k++;
-					l=0;	
-					temp = (k%100 == 0) ? 100 : 0;
-					if(k%100 == 0)
-						console.log(last(record.dot,2));
-				}
-			}
+			
 
 			setTimeout(function(){
-				
-				
-				var i = record.choix_dot(dotPlay.length);
-				var j = record.choix_coup(dotPlay[i].action.length);
-				
+			
+				if(Solitaire.is_blocked()){
+					return;
+				}
+			
+				var i = Math.floor(arr[2*k]*dotPlay.length);
+				var j = Math.floor(arr[2*k+1]*dotPlay[i].action.length);
+
 				Solitaire.joue_coup(dotPlay[i], dotPlay[i].action[j]);
-				l++;
+				k++;
 				delay();
 
 
@@ -409,52 +257,10 @@ var Solitaire = {
 
 		})();
 
+	},	
 
-		
-	},
-
-
-	algo_bogo : function(d){
-		k=0;
-		Solitaire.colorise();
-		(function delay(){
-
-			if(Solitaire.is_blocked()){
-				var s = Solitaire.is_winning(); 
-				
-				if(s == 1) return;
-				else{
-					if(s<3){
-						alert(s);
-					}
-					console.log(s);
-
-					Solitaire.remiseAZero();
-					Solitaire.colorise();
-
-
-					
-
-					k++;
-					
-				}
-			}
-
-			setTimeout(function(){
-				
-				var i = Math.floor(Math.random()*dotPlay.length); 
-				var j = Math.floor(Math.random()*dotPlay[i].action.length);
-				Solitaire.joue_coup(dotPlay[i], dotPlay[i].action[j]);
-				delay();
-
-
-			}, 0);
-
-
-		})();
-	},
 	is_blocked : function(){
-		if(dotPlay.length == 0){
+		if(dotPlay.length == 0 || completementBloque){
 			return true;
 		}
 		else {
@@ -521,11 +327,11 @@ var Solitaire = {
 		}
 	},
 	actionZero : function(){
+		dotPlay = [];
 		for(i=0; i<33; i++){
 			mapDot[i].action = new Array();
 
 		}
-
 	},
 	afficheMem : function(){
 		console.log(memoire.dot[memoire.dot.length-1].toString()+"-  -"+memoire.direction[memoire.direction.length-1].toString());
@@ -538,14 +344,41 @@ var outils = {
 	to_play : function(tab){
 		var play = false;
 		var dir = new Array("up", "left", "right", "down");
-
+		
 		for(j=0; j<dir.length; j++){
+			// Playable
 			if(outils.test_exist(tab, dir[j]) && tab.dotAjd[dir[j]].stat ==1 && tab.dotAjd[dir[j]].dotAjd[dir[j]].stat == 0){
 				play = true;
 				tab.action.push(dir[j]);
 				dotPlay.push(tab);
 			}
+			// Completely isolated
+			completementBloque =false;
+			if(tab.dotAjd[dir[j]] != undefined){
+
+				var cur = tab.dotAjd[dir[j]];
+				if(cur.stat == 0){
+					
+					for (var k = 0; k < dir.length; k++) {
+
+						if(cur.dotAjd[dir[k]] != undefined && cur.dotAjd[dir[k]] != tab){
+							if(cur.dotAjd[dir[k]].stat != 0){
+								completementBloque = false;
+							}
+
+						}
+					}
+				}else{
+					completementBloque = false;
+				}
+
+
+			}
+
 		}
+		
+
+
 		return play;
 
 	},
@@ -553,8 +386,6 @@ var outils = {
 		return (t.dotAjd[dir] != undefined && t.dotAjd[dir].dotAjd[dir] != undefined) ? true : false;
 
 	}
-
-
 };
 
 
@@ -562,7 +393,7 @@ var outils = {
 window.onload = function(){
 	var container = document.getElementById("container");
 	r = document.body.clientHeight*0.9;
-	container.style.height = r+"px";
+	container.style.height = r+50+"px";
 	container.style.width = r+"px";
 	container.style.top = r/0.9*0.025+"px";
 
