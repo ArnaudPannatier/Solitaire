@@ -13,9 +13,9 @@ html, body{
 #container {
 	position: relative;
 	margin : 0 auto;
-	text-align: center;
+	text-align: right;
 	color : #000;
-	line-height: 45px;
+	line-height: 20px;
 	
 }
 .dot {
@@ -30,7 +30,8 @@ html, body{
 }
 #infos {
 	position: absolute;
-	bottom : 20px;
-	left : 20px;
+	bottom:  80px;
+	right : 30px;
 	margin: 0 auto;
+	font-size: 14px;
 }

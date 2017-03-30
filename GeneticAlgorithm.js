@@ -3,10 +3,12 @@ var GA = {
 	population: [],
 	matingPool : [],
 	bestFit : {value : 0, index : 0},
-	mutationRate : 0.25,
+	mutationRate : 0.01,
 	etrangers : 0.1,
-	CrossOverOffset : 5,
-	bestSelected : 15,
+	CrossOverOffset : 10,
+	bestSelected : 5,
+	TheorethicalBestFit : 31,
+	historicalBestFit : 0,
 
 
 
@@ -14,7 +16,6 @@ var GA = {
 		for (var i = 0; i < GA.popSize; i++) {
 			this.population.push(new DNA());
 		}
-		console.log(GA.population);
 	},
 	evaluate : function(){
 		this.bestFit = {value : 0, index : 0};
@@ -27,9 +28,15 @@ var GA = {
 				this.bestFit.index = i;
 			}
 		}
+
+		if(this.bestFit.value > this.historicalBestFit){
+			this.historicalBestFit = this.bestFit.value;
+		}
+
 		$('#BestFit').text(this.bestFit.value);
 		$('#Average').text(Math.floor(moyenne*100)/100);
-		
+		$('#Historical').text(this.historicalBestFit);
+
 		Solitaire.playArray(GA.population[this.bestFit.index].code);
 
 
@@ -104,6 +111,12 @@ var GA = {
 
 
 		(function delay(){
+			
+			if(GA.bestFit.value == GA.TheorethicalBestFit){
+				alert('DARWIN ROCKS !');
+				return;
+			}
+
 			setTimeout(function(){
 				// Selection
 				GA.evaluate();
