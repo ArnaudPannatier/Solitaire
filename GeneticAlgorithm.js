@@ -4,9 +4,9 @@ var GA = {
 	matingPool : [],
 	bestFit : {value : 0, index : 0},
 	mutationRate : 0.01,
-	etrangers : 0.1,
-	CrossOverOffset : 10,
-	bestSelected : 5,
+	etrangers : 0.2,
+	CrossOverOffset : 0,
+	bestSelected : 8,
 	TheorethicalBestFit : 31,
 	historicalBestFit : 0,
 
