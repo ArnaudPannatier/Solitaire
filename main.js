@@ -317,6 +317,7 @@ var Solitaire = {
 
 	},
 	remiseAZero : function(){
+		completementBloque = false;
 		for(i=0; i<33; i++){
 			if(i != 10){
 				mapDot[i].stat = 1;
@@ -333,10 +334,6 @@ var Solitaire = {
 
 		}
 	},
-	afficheMem : function(){
-		console.log(memoire.dot[memoire.dot.length-1].toString()+"-  -"+memoire.direction[memoire.direction.length-1].toString());
-
-	}
 
 };
 
@@ -345,6 +342,7 @@ var outils = {
 		var play = false;
 		var dir = new Array("up", "left", "right", "down");
 		
+		localementBloque = true;
 		for(j=0; j<dir.length; j++){
 			// Playable
 			if(outils.test_exist(tab, dir[j]) && tab.dotAjd[dir[j]].stat ==1 && tab.dotAjd[dir[j]].dotAjd[dir[j]].stat == 0){
@@ -352,35 +350,32 @@ var outils = {
 				tab.action.push(dir[j]);
 				dotPlay.push(tab);
 			}
-			// Completely isolated
-			completementBloque =false;
+			
+			// Completely isolated		
 			if(tab.dotAjd[dir[j]] != undefined){
-
 				var cur = tab.dotAjd[dir[j]];
 				if(cur.stat == 0){
-					
 					for (var k = 0; k < dir.length; k++) {
-
-						if(cur.dotAjd[dir[k]] != undefined && cur.dotAjd[dir[k]] != tab){
-							if(cur.dotAjd[dir[k]].stat != 0){
-								completementBloque = false;
+						var secondNeighbourg = cur.dotAjd[dir[k]];
+						if(secondNeighbourg != undefined && secondNeighbourg != tab){
+							if(secondNeighbourg.stat != 0){
+								localementBloque = false;
 							}
-
 						}
 					}
 				}else{
-					completementBloque = false;
+					localementBloque = false;
 				}
-
-
 			}
-
 		}
-		
+	
+		if(localementBloque){
+			completementBloque = true;
+		}
+
 
 
 		return play;
-
 	},
 	test_exist : function(t, dir){
 		return (t.dotAjd[dir] != undefined && t.dotAjd[dir].dotAjd[dir] != undefined) ? true : false;

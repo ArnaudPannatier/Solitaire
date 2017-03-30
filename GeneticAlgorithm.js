@@ -4,7 +4,9 @@ var GA = {
 	matingPool : [],
 	bestFit : {value : 0, index : 0},
 	mutationRate : 0.25,
-	etrangers : 0.06,
+	etrangers : 0.1,
+	CrossOverOffset : 5,
+	bestSelected : 15,
 
 
 
@@ -42,7 +44,7 @@ var GA = {
 		// Three best
 		GA.population.sort(function(a,b){return b.fitness-a.fitness});
 
-		var n = 10;
+		var n = GA.bestSelected;
 		for(i=0; i<n; i++){
 			for(j=0; j<n-i; j++){
 				GA.matingPool.push(GA.population[i]);
@@ -59,9 +61,9 @@ var GA = {
 		var randomIndex = Math.floor(Math.random()*child.code.length);
 
 		//my style
-		var randomNum = Math.floor(Math.pow(Math.random(),5)*10)+5;
+		var randomNum = Math.floor(Math.pow(Math.random(),5)*10)+GA.CrossOverOffset;
 
-		randomIndex = 2*mother.fitness-randomNum;
+		randomIndex = 2*(mother.fitness-randomNum);
 
 		
 		for (var i = 0; i < child.code.length; i++) {
@@ -96,7 +98,7 @@ var GA = {
 		}
 	},
 	algo : function(){
-		var gen = 1, temp = 100;
+		var gen = 1, temp = 20;
 		// Setup
 		this.createPopulation();
 
